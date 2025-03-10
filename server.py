@@ -41,7 +41,7 @@ def book(competition,club):
         return render_template('welcome.html', club=club, competitions=competitions)
 
 
-@app.route('/purchasePlaces',methods=['POST'])
+@app.route('/purchasePlaces', methods=['POST'])
 def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
@@ -52,9 +52,13 @@ def purchasePlaces():
         flash(f"Error: You only have {club_points}, You cannot book {placesRequired} places")
         return redirect(url_for('book', competition=competition['name'], club=club['name']))
 
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+    # Déduction des points du club
+    club['points'] = str(club_points - placesRequired)  # Conversion en string car les points sont stockés comme string
+
+    competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
     flash('Great! - Booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
+
 
 
 # TODO: Add route for points display

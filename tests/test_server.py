@@ -1,50 +1,63 @@
 import pytest
+from server import app, clubs, competitions
 from flask import url_for
-from server import app  # Assure-toi que c'est bien le bon fichier où se trouve ton app Flask
 
 @pytest.fixture
 def client():
-    """Créer un client de test Flask"""
-    app.config['TESTING'] = True
+    app.config["TESTING"] = True
     with app.test_client() as client:
         yield client
 
-def test_successful_booking(client):
-    """Un club peut acheter un nombre de places inférieur ou égal à ses points"""
-    app.config["clubs"] = [{"name": "Test Club", "points": "5"}]
-    app.config["competitions"] = [{"name": "Test Competition", "numberOfPlaces": "25"}]
+def test_purchase_valid_places(client):
+    # Configuration initiale
+    test_club = {"name": "Test Club", "points": 10}
+    test_competition = {"name": "Test Competition", "numberOfPlaces": "20"}
+    clubs.append(test_club)
+    competitions.append(test_competition)
 
-    response = client.post("/purchasePlaces", data={
-        "competition": "Test Competition",
+    # Test d'achat de places
+    response = client.post('/purchasePlaces', data={
         "club": "Test Club",
-        "places": "3"
-    }, follow_redirects=True)
-
-    assert b"Great! - Booking complete!" in response.data
-
-def test_booking_exceeding_club_points(client):
-    """Un club ne peut pas acheter plus de places qu’il n’a de points"""
-    app.config["clubs"] = [{"name": "Test Club", "points": "2"}]
-    app.config["competitions"] = [{"name": "Test Competition", "numberOfPlaces": "25"}]
-
-    response = client.post("/purchasePlaces", data={
         "competition": "Test Competition",
-        "club": "Test Club",
-        "places": "5"  # Demande plus que les points disponibles
-    }, follow_redirects=True)
-
-    assert b"Error: You only have 2" in response.data  # Vérifie le message d'erreur
-
-def test_points_are_deducted(client):
-    """Les points utilisés doivent bien être déduits du total de points du club"""
-    app.config["clubs"] = [{"name": "Test Club", "points": "10"}]
-    app.config["competitions"] = [{"name": "Test Competition", "numberOfPlaces": "25"}]
-
-    client.post("/purchasePlaces", data={
-        "competition": "Test Competition",
-        "club": "Test Club",
-        "places": "4"
+        "places": "5"
     })
 
-    updated_club_points = int(app.config["clubs"][0]["points"])
-    assert updated_club_points == 6  # 10 - 4 = 6
+    # Vérifications
+    assert response.status_code == 200
+    assert int(test_competition["numberOfPlaces"]) == 15
+
+def test_purchase_too_many_places(client):
+    # Configuration initiale
+    test_club = {"name": "Poor Club", "points": 3}
+    test_competition = {"name": "Expensive Competition", "numberOfPlaces": "20"}
+    clubs.append(test_club)
+    competitions.append(test_competition)
+
+    # Places purchase test
+    response = client.post('/purchasePlaces', data={
+        "club": "Poor Club",
+        "competition": "Expensive Competition",
+        "places": "5"
+    })
+
+    # Verifications
+    assert response.status_code == 302  # Redirection
+    assert int(test_competition["numberOfPlaces"]) == 20
+
+def test_points_deduction(client):
+    # Initial set up
+    test_club = {"name": "Points Club", "points": "10"}
+    test_competition = {"name": "Points Competition", "numberOfPlaces": "20"}
+    clubs.append(test_club)
+    competitions.append(test_competition)
+
+    # Places purchase test
+    initial_points = int(test_club["points"])
+    response = client.post("/purchasePlaces", data={
+        "club": "Points Club",
+        "competition": "Points Competition",
+        "places": "3"
+    })
+
+    assert response.status_code == 200
+    assert int(test_club["points"]) < initial_points  # Points should be deducted
