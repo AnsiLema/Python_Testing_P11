@@ -53,7 +53,7 @@ def purchasePlaces():
         return redirect(url_for('book', competition=competition['name'], club=club['name']))
 
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    flash('Great-booking complete!')
+    flash('Great! - Booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
 
