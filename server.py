@@ -53,7 +53,7 @@ def purchasePlaces():
 
     if not competition or not club:
         flash("Invalid competition or club.")
-        return redirect(url_for('showSummary'))
+        return redirect(url_for('index'))
 
     placesRequired = int(request.form['places'])
     availablePlaces = int(competition['numberOfPlaces'])
