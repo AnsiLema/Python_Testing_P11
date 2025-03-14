@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from datetime import datetime
+from datetime import datetime, timedelta
 from server import app, is_competition_past
 
 
