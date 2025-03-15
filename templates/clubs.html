@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clubs</title>
+</head>
+<body>
+    <h1>Clubs and Points</h1>
+    <table border="1">
+        <tr>
+            <th>Club</th>
+            <th>Points</th>
+        </tr>
+        {% for club in clubs %}
+        <tr>
+            <td>{{club['name']}}</td>
+            <td>{{club['points']}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{url_for('index')}}">Back to Login page</a>
+</body>
+</html>
