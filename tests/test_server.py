@@ -9,7 +9,7 @@ def client():
         yield client
 
 def test_purchase_valid_places(client):
-    # Configuration initiale
+    # Initial setup
     test_club = {"name": "Test Club", "points": 10}
     test_competition = {"name": "Test Competition", "numberOfPlaces": "20"}
     clubs.append(test_club)
@@ -22,12 +22,12 @@ def test_purchase_valid_places(client):
         "places": "5"
     })
 
-    # Vérifications
+    # Verifications
     assert response.status_code == 200
     assert int(test_competition["numberOfPlaces"]) == 15
 
 def test_purchase_too_many_places(client):
-    # Configuration initiale
+    # Initial setup
     test_club = {"name": "Poor Club", "points": 3}
     test_competition = {"name": "Expensive Competition", "numberOfPlaces": "20"}
     clubs.append(test_club)
@@ -45,7 +45,7 @@ def test_purchase_too_many_places(client):
     assert int(test_competition["numberOfPlaces"]) == 20
 
 def test_points_deduction(client):
-    # Initial set up
+    # Initial setup
     test_club = {"name": "Points Club", "points": "10"}
     test_competition = {"name": "Points Competition", "numberOfPlaces": "20"}
     clubs.append(test_club)

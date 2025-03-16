@@ -52,8 +52,8 @@ def purchasePlaces():
         flash(f"Error: You only have {club_points}, You cannot book {placesRequired} places")
         return redirect(url_for('book', competition=competition['name'], club=club['name']))
 
-    # Déduction des points du club
-    club['points'] = str(club_points - placesRequired)  # Conversion en string car les points sont stockés comme string
+    # Points deducted
+    club['points'] = str(club_points - placesRequired)  # Convert to string because points are stored as string
 
     competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
     flash('Great! - Booking complete!')
