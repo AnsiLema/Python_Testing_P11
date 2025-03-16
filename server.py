@@ -57,8 +57,19 @@ def purchasePlaces():
     placesRequired = int(request.form['places'])
     club_points = int(club['points'])
 
+    places = request.form['places']
+    if not places.isdigit():
+        raise ValueError("The number of places must be a number")
+
     if placesRequired > club_points:
         flash(f"Error: You only have {club_points}, You cannot book {placesRequired} places")
+        return redirect(url_for('book', competition=competition['name'], club=club['name']))
+
+    if placesRequired <= 0:
+        raise ValueError("The number of places must be greater than 0")
+
+    if placesRequired > 12:
+        flash("Error: You cannot book more than 12 places per competition", "error")
         return redirect(url_for('book', competition=competition['name'], club=club['name']))
 
     # Points deducted
