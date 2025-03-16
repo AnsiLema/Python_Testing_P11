@@ -4,7 +4,6 @@ from server import app
 @pytest.fixture
 def client():
     app.config["TESTING"] = True
-    app.config["SECRET_KEY"] = "test_secret" # Avoid session errors
     with app.test_client() as client:
         yield client
 
