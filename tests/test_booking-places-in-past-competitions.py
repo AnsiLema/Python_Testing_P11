@@ -109,4 +109,4 @@ def test_valid_purchase(client, mock_data, monkeypatch):
     })
 
     assert response.status_code == 200
-    assert b"Great - booking complete!" in response.data
+    assert b"Great! - Booking complete!" in response.data

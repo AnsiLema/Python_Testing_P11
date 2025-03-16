@@ -43,6 +43,7 @@ def mock_competition():
         "competitions": [
             {
                 "name": "Test Competition",
+                "date": "2025-12-31 13:30:00",
                 "numberOfPlaces": "25"
             }
         ]
@@ -99,6 +100,7 @@ def test_purchase_place_above_limitation(client):
     """
     response = client.post('/purchasePlaces', data={
         'competition': 'Test Competition',
+        'date': '2025-12-31 13:30:00',
         'club': 'Test Club',
         'places': '13'
     }, follow_redirects=True)
