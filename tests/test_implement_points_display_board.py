@@ -11,7 +11,6 @@ def test_client():
     client = app.test_client()
     yield client
 
-
 def test_show_clubs_route_status_code(test_client):
     response = test_client.get('/clubs')
     assert response.status_code == 200
@@ -56,7 +55,12 @@ def test_index_route_renders_template(mocker, test_client):
     mock_render.assert_called_once_with('index.html')
     assert response.data == b'Mocked Index Page'
 
+
 def test_logout_redirects_to_index(test_client):
     response = test_client.get('/logout', follow_redirects=False)
     assert response.status_code == 302
+
+def test_showClubs_route_status_code(test_client):
+    response = test_client.get('/clubs')
+    assert response.status_code == 200
 
