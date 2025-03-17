@@ -101,7 +101,7 @@ def showSummary():
     club = next((club for club in clubs if club['email'] == request.form['email']), None)
 
     if club is None:
-        flash("Sorry, this email is not registered.", 400)
+        flash("Sorry, this email is not registered.")
         return redirect(url_for('index'))
 
     return render_template('welcome.html',club=club,competitions=competitions)
