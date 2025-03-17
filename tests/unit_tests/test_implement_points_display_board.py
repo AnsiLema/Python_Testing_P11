@@ -1,8 +1,6 @@
 import pytest
-from flask import json
-
-from server import app, loadClubs, loadCompetitions, logout
-from unittest.mock import mock_open, patch
+from server import app, loadClubs, loadCompetitions
+from unittest.mock import mock_open
 
 
 @pytest.fixture

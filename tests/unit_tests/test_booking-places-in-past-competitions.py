@@ -3,13 +3,6 @@ from server import app, is_competition_past
 
 
 @pytest.fixture
-def client():
-    app.config["TESTING"] = True
-    with app.test_client() as client:
-        yield client
-
-
-@pytest.fixture
 def mock_data():
     return {
         "clubs": [{"name": "Test Club", "email": "test@club.com", "points": "10"}],
