@@ -136,7 +136,7 @@ def test_nonexistent_club(client, mock_data, monkeypatch):
     })
 
     assert response.status_code == 302
-    assert response.headers["Location"] == url_for("index", _external=True)
+    assert response.headers["Location"] == url_for("index", _external=False)
 
 
 def test_nonexistent_competition(client, mock_data, monkeypatch):
@@ -165,6 +165,6 @@ def test_nonexistent_competition(client, mock_data, monkeypatch):
     })
 
     assert response.status_code == 302
-    assert response.headers["Location"] == url_for("index", _external=True)
+    assert response.headers["Location"] == url_for("index", _external=False)
 
 
