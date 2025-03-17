@@ -109,29 +109,40 @@ def test_purchase_place_above_limitation(client):
 
 def test_purchase_places_non_numeric_value(client):
     """
-    Tests the behavior of the `/purchasePlaces` endpoint when a non-numeric value
-    is provided for the `places` field.
-    This test verifies that a `ValueError` is raised when an invalid non-numeric
-    input is sent as the number of places to purchase.
-    """
-    with pytest.raises(ValueError):
-        client.post('/purchasePlaces', data={
-            'competition': 'Test Competition',
-            'club': 'Test Club',
-            'places': 'abc'
-        })
+    Tests the behavior of the purchasePlaces endpoint when a non-numeric value
+    is provided for the number of places to be purchased. The function ensures
+    that the application properly handles invalid input by validating that the
+    appropriate error message is displayed and the correct HTTP status code is returned.
 
+    :param client: A test client instance used to simulate HTTP requests.
+    :type client: flask.testing.FlaskClient
+    :return: None
+    """
+    response = client.post('/purchasePlaces', data={
+        'competition': 'Test Competition',
+        'club': 'Test Club',
+        'places': 'abc'
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Error: The number of places must be a valid integer." in response.data
 
 def test_purchase_places_with_negative_value(client):
     """
-    Tests the behavior of the purchasePlaces endpoint when a negative
-    value for 'places' is submitted. Ensures that the system properly
-    handles invalid input and verifies that a `ValueError` is raised
-    under such circumstances.
+    Tests the behavior of the purchase places functionality when a negative value for the
+    number of places is submitted. This test ensures that the system validates input
+    properly and rejects invalid values such as negative integers for places.
+
+    :param client: A test client instance used to simulate requests to the application.
+    :type client: flask.testing.FlaskClient
+    :return: None
+    :rtype: None
     """
-    with pytest.raises(ValueError):
-        client.post('/purchasePlaces', data={
-            'competition': 'Test Competition',
-            'club': 'Test Club',
-            'places': '-5'
-        }, follow_redirects=True)
+    response = client.post('/purchasePlaces', data={
+        'competition': 'Test Competition',
+        'club': 'Test Club',
+        'places': '-5'  # Valeur négative
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Error: The number of places must be greater than 0" in response.data

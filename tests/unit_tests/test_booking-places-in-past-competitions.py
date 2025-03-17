@@ -1,5 +1,5 @@
 import pytest
-from server import app, is_competition_past
+from server import is_competition_past
 
 
 @pytest.fixture

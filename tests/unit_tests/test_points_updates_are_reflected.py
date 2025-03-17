@@ -1,5 +1,5 @@
 import pytest
-from server import app, url_for
+from server import url_for
 
 
 @pytest.fixture
@@ -33,7 +33,6 @@ def test_valid_purchase(client, mock_data, monkeypatch):
         test execution.
     :return: None
     """
-
     monkeypatch.setattr("server.clubs", mock_data["clubs"])
     monkeypatch.setattr("server.competitions", mock_data["competitions"])
 
@@ -108,12 +107,25 @@ def test_not_enough_places(client, mock_data, monkeypatch):
 
     assert response.status_code == 200
     assert b"Not enough places available." in response.data
-    assert int(mock_data["competitions"][0]["numberOfPlaces"]) == 25  # Vérifier que les places n'ont pas changé
+    assert int(mock_data["competitions"][0]["numberOfPlaces"]) == 25 # Check that the  number of places has not changed
 
 
 def test_nonexistent_club(client, mock_data, monkeypatch):
-    """Test d'un achat avec un club inexistant"""
+    """
+    Tests the behavior when attempting to purchase places using a club that does not
+    exist in the system. Simulates the scenario where a client tries to make a
+    purchase with invalid club information, and verifies that the server redirects
+    to the expected location.
 
+    :param client: An instance of the test client used to simulate HTTP requests
+        to the server.
+    :param mock_data: A dictionary containing mock data for clubs and competitions
+        used to patch the server's data during testing.
+    :param monkeypatch: A pytest fixture used to dynamically modify the behavior
+        of the server functions or objects by patching attributes.
+    :return: Asserts that the response status code is 302 and ensures that the
+        server redirects the client to the index page.
+    """
     monkeypatch.setattr("server.clubs", mock_data["clubs"])
     monkeypatch.setattr("server.competitions", mock_data["competitions"])
 
@@ -128,7 +140,20 @@ def test_nonexistent_club(client, mock_data, monkeypatch):
 
 
 def test_nonexistent_competition(client, mock_data, monkeypatch):
-    """Test d'un achat avec une compétition inexistante"""
+    """
+    Tests the behavior when attempting to purchase places for a nonexistent competition.
+
+    The function verifies that the application properly handles cases where a club
+    attempts to buy places in a competition that does not exist in the system. It
+    ensures that the server redirects to the main index page without crashing or
+    exposing any vulnerabilities.
+
+    :param client: A flask testing client to simulate requests to the server.
+    :param mock_data: A dictionary containing mock data for clubs and competitions.
+    :param monkeypatch: A pytest fixture that allows modifying and controlling
+        the behavior of objects or functions during testing.
+    :return: None
+    """
 
     monkeypatch.setattr("server.clubs", mock_data["clubs"])
     monkeypatch.setattr("server.competitions", mock_data["competitions"])
