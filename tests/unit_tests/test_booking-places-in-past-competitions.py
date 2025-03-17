@@ -103,3 +103,49 @@ def test_valid_purchase(client, mock_data, monkeypatch):
 
     assert response.status_code == 200
     assert b"Great! - Booking complete!" in response.data
+
+def test_book_with_nonexistent_club(client, mock_data, monkeypatch):
+    """
+    Tests the functionality of booking a competition with a club that does not exist
+    in the server's data. The test ensures the application handles this edge case
+    gracefully and returns the appropriate response to the client.
+
+    :param client: A test client instance for simulating requests to the server.
+    :param mock_data: A dictionary containing mock data for clubs and competitions
+        used to patch the server's state during the test.
+    :param monkeypatch: A pytest fixture used to temporarily modify or replace
+        attributes, such as server data, during testing.
+    :return: None
+    """
+
+    monkeypatch.setattr("server.clubs", mock_data["clubs"])
+    monkeypatch.setattr("server.competitions", mock_data["competitions"])
+
+    response = client.get("/book/Future Competition/Fake Club", follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Something went wrong - please try again." in response.data
+
+
+def test_book_with_nonexistent_competition(client, mock_data, monkeypatch):
+    """
+    Tests the behavior of the booking endpoint when attempting to book with a
+    non-existent competition. This test ensures that the application correctly
+    handles invalid competition names and provides an appropriate error message.
+
+    :param client: A test client instance for simulating HTTP requests and
+        responses.
+    :param mock_data: A dictionary containing mock data, including data for clubs
+        and competitions, used to replace the original data during testing.
+    :param monkeypatch: A pytest fixture for dynamically modifying or replacing
+        attributes at runtime within the test environment.
+    :return: None
+    """
+
+    monkeypatch.setattr("server.clubs", mock_data["clubs"])
+    monkeypatch.setattr("server.competitions", mock_data["competitions"])
+
+    response = client.get("/book/Fake Competition/Test Club", follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Something went wrong - please try again." in response.data
